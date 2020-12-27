@@ -1,0 +1,66 @@
+on fs
+	mkdir /mnt/vendor 0700 root root
+
+	mkdir /mnt/vendor/protect_f 0700 root root
+	mkdir /mnt/vendor/protect_s 0700 root root
+
+	mkdir /mnt/vendor/nvdata 0700 root root
+	mkdir /mnt/vendor/nvcfg 0700 root root
+
+	mkdir /mnt/vendor/persist 0700 root root
+
+	mount ext4 /dev/block/platform/bootdevice/by-name/protect1 /mnt/vendor/protect_f
+	mount ext4 /dev/block/platform/bootdevice/by-name/protect2 /mnt/vendor/protect_s
+	mount ext4 /dev/block/platform/bootdevice/by-name/nvdata /mnt/vendor/nvdata
+	mount ext4 /dev/block/platform/bootdevice/by-name/nvcfg /mnt/vendor/nvcfg
+	mount ext4 /dev/block/platform/bootdevice/by-name/persist /mnt/vendor/persist
+
+	write /proc/bootprof "tkcore: prepare persist sfs"
+	mkdir /mnt/vendor/persist/t6
+
+	setprop vendor.trustkernel.fs.mode 2
+	setprop vendor.trustkernel.fs.state ready
+
+	start teed
+
+on property:vendor.trustkernel.fs.state=ready
+	write /proc/bootprof "tkcore: prepare basic"
+	mkdir /data/vendor
+	mkdir /data/vendor/t6
+
+	write /proc/bootprof "tkcore: prepare sfs"
+	mkdir /data/vendor/t6/fs
+
+	write /proc/bootprof "tkcore: prepare service provider ta path"
+	mkdir /data/vendor/t6/app
+
+# For non-encrypted case
+on property:ro.crypto.state=unencrypted
+	setprop vendor.trustkernel.fs.mode 1
+	setprop vendor.trustkernel.fs.state ready
+
+# For FDE/encrypted successfully
+on property:vold.decrypt=trigger_restart_framework
+	setprop vendor.trustkernel.fs.mode 2
+	setprop vendor.trustkernel.fs.state ready
+
+# For FBE/encrypted successfully
+on property:ro.crypto.type=file && property:ro.crypto.state=encrypted
+	setprop vendor.trustkernel.fs.mode 3
+	setprop vendor.trustkernel.fs.state ready
+
+on property:vendor.trustkernel.log.state=ready
+	write /proc/bootprof "tkcore: prepare log file"
+	restorecon /data/vendor/t6/tkcore.log
+	setprop vendor.trustkernel.log.state enable
+
+service teed /sbin/teed \
+    --datapath /data/vendor/t6/fs \
+    --sptapath /data/vendor/t6/app \
+    --systapath /vendor/app/t6 \
+    --prot /mnt/vendor/persist/t6 \
+    --logpath /data/vendor/t6/tkcore.log \
+    --proprefix vendor.trustkernel
+    user root
+    group root
+    disabled

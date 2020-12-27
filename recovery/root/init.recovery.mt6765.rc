@@ -1,0 +1,45 @@
+# for encryption
+import /trustkernel.rc
+
+on init
+    symlink /dev/block/platform/bootdevice /dev/block/bootdevice
+
+    start hwservicemanager
+    setprop crypto.ready 1
+
+on fs
+    export ANDROID_ROOT /system_root
+
+    symlink /dev/block/mmcblk0boot0 /dev/block/platform/bootdevice/by-name/preloader_a
+    symlink /dev/block/mmcblk0boot1 /dev/block/platform/bootdevice/by-name/preloader_b
+
+service hwservicemanager /sbin/hwservicemanager
+    user root
+    group root
+    disabled
+    onrestart setprop hwservicemanager.ready false
+
+service servicemanager /sbin/servicemanager
+    user root
+    group root readproc
+    disabled
+
+service gatekeeper-1-0 /sbin/android.hardware.gatekeeper@1.0-service
+    user root
+    group root
+    disabled
+
+service keymaster-3-0 /sbin/android.hardware.keymaster@3.0-service
+    user root
+    group root
+    disabled
+
+on property:crypto.ready=0
+    stop keymaster-3-0
+    stop gatekeeper-1-0
+    stop servicemanager
+
+on property:vendor.sys.listeners.registered=true
+    start keymaster-3-0
+    start gatekeeper-1-0
+    start servicemanager
