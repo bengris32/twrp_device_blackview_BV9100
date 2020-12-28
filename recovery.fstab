@@ -5,7 +5,7 @@
 /vendor             ext4      /dev/block/platform/bootdevice/by-name/vendor                         flags=display="Vendor";wipeingui
 /vendor_image       emmc      /dev/block/platform/bootdevice/by-name/vendor                         flags=display="Vendor image";backup=1;flashimg=1
 
-/data               ext4      /dev/block/platform/bootdevice/by-name/userdata                       flags=display="Data";encryptable=/dev/block/platform/bootdevice/by-name/metadata
+/data               ext4      /dev/block/platform/bootdevice/by-name/userdata                       flags=display="Data";dm_use_original_path;encryptable=/dev/block/platform/bootdevice/by-name/metadata
 /cache              ext4      /dev/block/platform/bootdevice/by-name/cache                          flags=display="Cache";wipeingui;wipeduringfactoryreset
 
 /misc               emmc      /dev/block/platform/bootdevice/by-name/para                           flags=display="Misc";backup=1;flashimg=1

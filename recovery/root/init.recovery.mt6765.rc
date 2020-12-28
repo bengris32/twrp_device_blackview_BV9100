@@ -6,7 +6,26 @@ on early-init
     chmod 0755 /sys/kernel/debug
 
 on init
+    # Somehow AOSP build system hasn't provided a symlink here
+    symlink /system_root/system /system
+
+    # symlink /dev/block/platform/bootdevice to /dev/block/bootdevice for compatibility
     symlink /dev/block/platform/bootdevice /dev/block/bootdevice
+
+    # also symlink manifest to system
+    mkdir /system_root/system 0700 root root
+    symlink /vendor/manifest.xml /system_root/system/manifest.xml
+
+    # symlink blobs into their correct places
+    mkdir /vendor/lib64 0700 root root
+    mkdir /vendor/lib64/hw 0700 root root
+
+    symlink /sbin/keystore.mt6765.so /vendor/lib64/hw/keystore.mt6765.so
+    symlink /sbin/keystore.v2.trustkernel.so /vendor/lib64/hw/keystore.v2.trustkernel.so
+    symlink /sbin/gatekeeper.mt6765.so /vendor/lib64/hw/gatekeeper.mt6765.so
+
+    symlink /sbin/android.hardware.gatekeeper@1.0-impl.so /vendor/lib64/hw/android.hardware.gatekeeper@1.0-impl.so
+    symlink /sbin/android.hardware.keymaster@3.0-impl.so /vendor/lib64/hw/android.hardware.keymaster@3.0-impl.so
 
     start hwservicemanager
     setprop crypto.ready 1
@@ -14,6 +33,7 @@ on init
 on fs
     export ANDROID_ROOT /system_root
 
+on post-fs-data
     symlink /dev/block/mmcblk0boot0 /dev/block/platform/bootdevice/by-name/preloader_a
     symlink /dev/block/mmcblk0boot1 /dev/block/platform/bootdevice/by-name/preloader_b
 
@@ -48,9 +68,8 @@ on property:crypto.ready=0
     stop gatekeeper-1-0
     stop servicemanager
 
-on property:vendor.sys.listeners.registered=true
+# start hals as soon as hwservicemanager is ready
+on property:hwservicemanager.ready=true
     start keymaster-3-0
     start gatekeeper-1-0
     start servicemanager
-
-
