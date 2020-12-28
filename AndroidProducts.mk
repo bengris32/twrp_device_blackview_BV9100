@@ -1,2 +1,2 @@
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/omni_bv9100.mk
+    $(LOCAL_DIR)/omni_BV9100.mk

@@ -19,11 +19,21 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, vendor/omni/config/common.mk)
 
-PRODUCT_DEVICE := bv9100
-PRODUCT_NAME := omni_bv9100
+PRODUCT_DEVICE := BV9100
+PRODUCT_NAME := omni_BV9100
 PRODUCT_BRAND := blackview
 PRODUCT_MODEL := BV9100
 PRODUCT_MANUFACTURER := Blackview
+
+# Override build fingerprint and desc for encryption blobs
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    PRODUCT_DEVICE=BV9100 \
+    PRODUCT_NAME=BV9100_EEA \
+    PRIVATE_BUILD_DESC="full_k65v1_64_bsp-user 9 PPR1.180610.011 eng.releas.20190824.110901 release-keys"
+
+BUILD_FINGERPRINT := Blackview/BV9100_EEA/BV9100:9/PPR1.180610.011/1563181284:user/release-keys
+
+PLATFORM_SECURITY_PATCH := 2019-08-05
 
 # Resolution
 TARGET_SCREEN_WIDTH := 1080

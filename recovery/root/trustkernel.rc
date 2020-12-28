@@ -15,6 +15,11 @@ on fs
 	mount ext4 /dev/block/platform/bootdevice/by-name/nvcfg /mnt/vendor/nvcfg
 	mount ext4 /dev/block/platform/bootdevice/by-name/persist /mnt/vendor/persist
 
+	symlink /mnt/vendor/protect_f /vendor/protect_f
+	symlink /mnt/vendor/protect_s /vendor/protect_s
+	symlink /mnt/vendor/nvcfg /vendor/nvcfg
+	symlink /mnt/vendor/nvdata /vendor/nvdata
+
 	write /proc/bootprof "tkcore: prepare persist sfs"
 	mkdir /mnt/vendor/persist/t6
 
@@ -64,3 +69,4 @@ service teed /sbin/teed \
     user root
     group root
     disabled
+    seclabel u:r:recovery:s0

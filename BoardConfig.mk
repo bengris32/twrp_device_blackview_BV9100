@@ -1,4 +1,4 @@
-LOCAL_PATH := device/blackview/bv9100
+LOCAL_PATH := device/blackview/BV9100
 
 # For building with minimal manifest
 ALLOW_MISSING_DEPENDENCIES := true
@@ -81,8 +81,8 @@ TARGET_RECOVERY_PIXEL_FORMAT := "BGRA_8888"
 TARGET_OTA_ASSERT_DEVICE := bv9100,BV9100
 
 # Prevent anti-rollback
-PLATFORM_SECURITY_PATCH := 2099-12-31
-PLATFORM_VERSION := 16.1.0
+#PLATFORM_SECURITY_PATCH := 2099-12-31
+#PLATFORM_VERSION := 16.1.0
 
 # TWRP
 TW_THEME := portrait_hdpi
