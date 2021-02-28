@@ -16,16 +16,19 @@
 
 # Inherit from those products. Most specific first.
 $(call inherit-product, build/target/product/embedded.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, vendor/omni/config/common.mk)
 
-PRODUCT_DEVICE := BV9100
-PRODUCT_NAME := omni_BV9100
+PRODUCT_DEVICE := bv9100
+PRODUCT_NAME := omni_bv9100
 PRODUCT_BRAND := Blackview
-PRODUCT_MODEL := BV9100
+PRODUCT_MODEL := bv9100
 PRODUCT_MANUFACTURER := Blackview
 
 # Resolution
 TARGET_SCREEN_WIDTH := 1080
 TARGET_SCREEN_HEIGHT := 2340
+
+# For TrustKernel TEE
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    PRODUCT_DEVICE=BV9100
+

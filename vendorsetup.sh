@@ -1,1 +1,1 @@
-add_lunch_combo omni_BV9100-eng
+add_lunch_combo omni_bv9100-eng
